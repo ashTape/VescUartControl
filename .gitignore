@@ -11,3 +11,5 @@
 *.a
 *.suo
 /examples/VescTestGetTelemetry/__vm/.VescTestGetTelemetry.vsarduino.h
+
+*.swp

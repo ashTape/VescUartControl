@@ -19,14 +19,13 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 #include "buffer.h"
 #include "crc.h"
 
-
-static HardwareSerial* vesc_io;
+static VescIO* vesc_io;
 static DEBUG_SERIAL_CLASS* debugSerialPort = NULL;
 
 bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPa);
 bool ProcessReadPacket(uint8_t* message, struct bldcMeasure& values, int len);
 
-void SetSerialPort(HardwareSerial* _serialPort)
+void SetSerialPort(VescIO* _serialPort)
 {
 	vesc_io = _serialPort;
 }
@@ -36,7 +35,7 @@ void SetDebugSerialPort(DEBUG_SERIAL_CLASS* _debugSerialPort)
 	debugSerialPort = _debugSerialPort;
 }
 
-int ReceiveUartMessage(uint8_t* payloadReceived, HardwareSerial* _vescserialPort) {
+int ReceiveUartMessage(uint8_t* payloadReceived, VescIO* _vescserialPort) {
 
 	//Messages <= 255 start with 2. 2nd byte is length
 	//Messages >255 start with 3. 2nd and 3rd byte is length combined with 1st >>8 and then &0xFF
@@ -122,7 +121,7 @@ bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPay) {
 	}
 }
 
-int PackSendPayload(uint8_t* payload, int lenPay, HardwareSerial* _vescserialPort) {
+int PackSendPayload(uint8_t* payload, int lenPay, VescIO* _vescserialPort) {
 	uint16_t crcPayload = crc16(payload, lenPay);
 	int count = 0;
 	uint8_t messageSend[256];
@@ -195,7 +194,7 @@ bool ProcessReadPacket(uint8_t* message, struct bldcMeasure& values, int len) {
 
 }
 
-bool VescUartGetValue(bldcMeasure& values, HardwareSerial* _vescserialPort) {
+bool VescUartGetValue(bldcMeasure& values, VescIO* _vescserialPort) {
 	uint8_t command[1] = { COMM_GET_VALUES };
 	uint8_t payload[256];
 	_vescserialPort->flush(); // move to comm function directly?
@@ -215,7 +214,7 @@ bool VescUartGetValue(bldcMeasure& values) {
 	return VescUartGetValue(values, vesc_io);
 }
 
-void VescUartSetCurrent(float current, HardwareSerial* _vescserialPort) {
+void VescUartSetCurrent(float current, VescIO* _vescserialPort) {
 	int32_t index = 0;
 	uint8_t payload[5];
 
@@ -227,7 +226,7 @@ void VescUartSetCurrent(float current){
 	VescUartSetCurrent(current, 0);
 }
 
-void VescUartSetPosition(float position, HardwareSerial* _vescserialPort) {
+void VescUartSetPosition(float position, VescIO* _vescserialPort) {
 	int32_t index = 0;
 	uint8_t payload[5];
 
@@ -239,7 +238,7 @@ void VescUartSetPosition(float position) {
 	VescUartSetPosition(position, vesc_io);
 }
 
-void VescUartSetDuty(float duty, HardwareSerial* _vescserialPort) {
+void VescUartSetDuty(float duty, VescIO* _vescserialPort) {
 	int32_t index = 0;
 	uint8_t payload[5];
 
@@ -252,7 +251,7 @@ void VescUartSetDuty(float duty) {
 }
 
 
-void VescUartSetRPM(float rpm, HardwareSerial* _vescserialPort) {
+void VescUartSetRPM(float rpm, VescIO* _vescserialPort) {
 	int32_t index = 0;
 	uint8_t payload[5];
 
@@ -264,7 +263,7 @@ void VescUartSetRPM(float rpm) {
 	VescUartSetRPM(rpm, vesc_io);
 }
 
-void VescUartSetCurrentBrake(float brakeCurrent, HardwareSerial* _vescserialPort) {
+void VescUartSetCurrentBrake(float brakeCurrent, VescIO* _vescserialPort) {
 	int32_t index = 0;
 	uint8_t payload[5];
 
@@ -277,7 +276,7 @@ void VescUartSetCurrentBrake(float brakeCurrent) {
 }
 
 
-void VescUartSetNunchukValues(remotePackage& data, HardwareSerial* _vescserialPort) {
+void VescUartSetNunchukValues(remotePackage& data, VescIO* _vescserialPort) {
 	int32_t ind = 0;
 	uint8_t payload[11];
 	payload[ind++] = COMM_SET_CHUCK_DATA;

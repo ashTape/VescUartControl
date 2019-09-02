@@ -48,6 +48,7 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
   #define DEBUG_SERIAL_CLASS Serial_
 #else
   #include <HardwareSerial.h>  // Arduino AVR
+  #include <SoftwareSerial.h>  // Arduino AVR
   #define DEBUG_SERIAL_CLASS HardwareSerial
 #endif
 
@@ -56,11 +57,12 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
   #define RX_TIMEOUT 10  // 10 ms default timeout
 #endif
 
-
+typedef SoftwareSerial VescIO;
+//typedef HardwareSerial VescIO;
 
 
 ///SetSerialPort sets the serial to communicate with the VESC
-void SetSerialPort(HardwareSerial* _serialPort);
+void SetSerialPort(VescIO* _serialPort);
 
 ///SetDebugSerialPort sets the serial for debug information
 void SetDebugSerialPort(DEBUG_SERIAL_CLASS* _debugSerialPort);
@@ -70,14 +72,14 @@ void SetDebugSerialPort(DEBUG_SERIAL_CLASS* _debugSerialPort);
 ///@param: payload as the payload [unit8_t Array] with length of int lenPayload
 ///@return the number of bytes send
 
-int PackSendPayload(uint8_t* payload, int lenPay, HardwareSerial* _vescserialPort);
+int PackSendPayload(uint8_t* payload, int lenPay, VescIO* _vescserialPort);
 
 ///ReceiveUartMessage receives the a message over Serial
 ///Define in a Config.h a SERIAL with the Serial in Arduino Style you want to you
 ///@parm the payload as the payload [unit8_t Array]
 ///@return the number of bytes receeived within the payload
 
-int ReceiveUartMessage(uint8_t* payloadReceived, HardwareSerial* _vescserialPort);
+int ReceiveUartMessage(uint8_t* payloadReceived, VescIO* _vescserialPort);
 
 ///Help Function to print struct bldcMeasure over Serial for Debug
 ///#define DEBUG necessary
@@ -95,7 +97,7 @@ void SerialPrint(uint8_t* data, int len);
 ///@param _vescserialPort, pointer of serial port to use
 /// if no pointer uses default port set by SetSerialPort()
 //@return true if success
-bool VescUartGetValue(struct bldcMeasure& values, HardwareSerial* _vescserialPort);
+bool VescUartGetValue(struct bldcMeasure& values, VescIO* _vescserialPort);
 bool VescUartGetValue(bldcMeasure& values);
 
 ///Sends a command to VESC to control the motor current
@@ -103,7 +105,7 @@ bool VescUartGetValue(bldcMeasure& values);
 ///@param _vescserialPort, pointer of serial port to use
 /// if no pointer uses default port set by SetSerialPort()
 
-void VescUartSetCurrent(float current, HardwareSerial* _vescserialPort);
+void VescUartSetCurrent(float current, VescIO* _vescserialPort);
 void VescUartSetCurrent(float current);
 
 ///Sends a command to VESC to control the motor brake
@@ -111,7 +113,7 @@ void VescUartSetCurrent(float current);
 ///@param _vescserialPort, pointer of serial port to use
 /// if no pointer uses default port set by SetSerialPort()
 
-void VescUartSetCurrentBrake(float brakeCurrent, HardwareSerial* _vescserialPort);
+void VescUartSetCurrentBrake(float brakeCurrent, VescIO* _vescserialPort);
 void VescUartSetCurrentBrake(float brakeCurrent);
 
 ///Sends values of a joystick and 2 buttons to VESC to control the nunchuk app
@@ -119,7 +121,7 @@ void VescUartSetCurrentBrake(float brakeCurrent);
 ///@param _vescserialPort, pointer of serial port to use
 /// if no pointer uses default port set by SetSerialPort()
 
-void VescUartSetNunchukValues(remotePackage& data, HardwareSerial* _vescserialPort);
+void VescUartSetNunchukValues(remotePackage& data, VescIO* _vescserialPort);
 void VescUartSetNunchukValues(remotePackage& data);
 
 ///Sends a command to VESC to control the motor position
@@ -127,7 +129,7 @@ void VescUartSetNunchukValues(remotePackage& data);
 ///@param _vescserialPort, pointer of serial port to use
 /// if no pointer uses default port set by SetSerialPort()
 
-void VescUartSetPosition(float position, HardwareSerial* _vescserialPort) ;
+void VescUartSetPosition(float position, VescIO* _vescserialPort) ;
 void VescUartSetPosition(float position) ;
 
 ///Sends a command to VESC to control the motor duty cycle
@@ -135,7 +137,7 @@ void VescUartSetPosition(float position) ;
 ///@param _vescserialPort, pointer of serial port to use
 /// if no pointer uses default port set by SetSerialPort()
 
-void VescUartSetDuty(float duty, HardwareSerial* _vescserialPort) ;
+void VescUartSetDuty(float duty, VescIO* _vescserialPort) ;
 void VescUartSetDuty(float duty) ;
 
 ///Sends a command to VESC to control the motor rotational speed
@@ -143,7 +145,7 @@ void VescUartSetDuty(float duty) ;
 ///@param _vescserialPort, pointer of serial port to use
 /// if no pointer uses default port set by SetSerialPort()
 
-void VescUartSetRPM(float rpm, HardwareSerial* _vescserialPort);
+void VescUartSetRPM(float rpm, VescIO* _vescserialPort);
 void VescUartSetRPM(float rpm);
 
 #endif

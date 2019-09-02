@@ -11,48 +11,42 @@
 
 //Include libraries copied from VESC
 #include "VescUart.h"
-#include "datatypes.h"
 
-//#define DEBUG 
-#define SERIALIO Serial
+#define DEBUG 
+#define SERIALIO SoftwareSerial(8,7) 
 #define DEBUGSERIAL Serial // usb serial
 
-
 unsigned long count;
+struct bldcMeasure measuredVal;
 
 void setup() {
+
+  DDRB |= _BV(5);
 	
 	//Setup UART port
-  SERIALIO.begin(115200);
-  SetSerialPort(&SERIALIO);
+	SERIALIO.begin(115200);
+	SetSerialPort(&SERIALIO);
+	SERIALIO.listen();
 
+	//Setup debug port
+	#ifdef DEBUG
+		DEBUGSERIAL.begin(115200);
+		SetDebugSerialPort(&DEBUGSERIAL);
+	#endif
 
-  DEBUGSERIAL.begin(115200);
-  #ifdef DEBUG
-  	//SEtup debug port
-  	SetDebugSerialPort(&DEBUGSERIAL);
-  #endif
+  PORTB |= _BV(5);
 }
 
-struct bldcMeasure measuredVal;
-	
-// the loop function runs over and over again until power down or reset
 void loop() {
-	//int len=0;
-	//len = ReceiveUartMessage(message);
-	//if (len > 0)
-	//{
-	//	len = PackSendPayload(message, len);
-	//	len = 0;
-	//}
-	
-    if (VescUartGetValue(measuredVal)) {
-        DEBUGSERIAL.print("Loop: "); DEBUGSERIAL.println(count++);
-        SerialPrint(measuredVal, &DEBUGSERIAL);
-        DEBUGSERIAL.print("Sent");
-        VescUartSetDuty(0.3, &SERIALIO);
-    }else{
-        Serial.println("Failed to get data!");
-    }
-    delay(250);
+	DEBUGSERIAL.print("Loop: "); DEBUGSERIAL.println(count++);
+  DEBUGSERIAL.flush();
+	if (VescUartGetValue(measuredVal)) {
+		//SerialPrint(measuredVal, &DEBUGSERIAL);
+		VescUartSetDuty(0.3, &SERIALIO);
+    PORTB |= _BV(5);
+	}else{
+		DEBUGSERIAL.println("Failed to get data!");
+    PORTB &= ~_BV(5);
+	}
+	delay(250);
 }
