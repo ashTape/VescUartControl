@@ -10,8 +10,8 @@
 // This lib version tested with vesc fw 3.38 and 3.40 on teensy 3.2 and arduino uno
 
 //Include libraries copied from VESC
-#include <VescUart.h>
-#include <datatypes.h>
+#include "VescUart.h"
+#include "datatypes.h"
 
 //#define DEBUG 
 #define SERIALIO Serial
